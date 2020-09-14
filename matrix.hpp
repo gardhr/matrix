@@ -1,0 +1,518 @@
+#ifndef GARDHR_MATRIX_INCLUDED
+ #define GARDHR_MATRIX_INCLUDED
+
+#ifndef GARDHR_MATRIX_NAMESPACE
+ #define GARDHR_MATRIX_NAMESPACE
+#endif
+
+#include <exception>
+#include <cstddef>
+#include <istream>
+#include <ostream>
+
+namespace GARDHR_MATRIX_NAMESPACE {
+
+template <typename Type>
+struct matrix
+{
+ typedef std::size_t size_t;
+ 
+ struct exception : std::exception
+ {
+  exception(char const* text)
+  : message(text)
+  { }
+
+  virtual char const* what() const throw()
+  {
+   return message;
+  }
+  
+  inline operator char const*() const throw()
+  {
+   return message;
+  }
+  
+  char const* message;
+ };
+ 
+#define MATRIX_REJECT(condition, function)\
+ if(condition) throw exception(#function" ["#condition"]")
+
+ Type* data;  
+ size_t columns;
+ size_t rows;
+ bool managed;
+ 
+ inline matrix()
+ : data(0), rows(0), columns(0)
+ { }   
+
+ inline matrix(size_t height, size_t width)
+ : data(0)
+ {
+  reshape(height, width);
+ }  
+  
+ inline matrix(size_t height, size_t width, Type const& scalar)
+ : data(0)
+ {
+  reshape(height, width);
+  *this = scalar;
+ }
+ 
+ inline matrix(matrix const& other)
+ : data(0)
+ {
+  *this = other;  
+ } 
+ 
+ inline matrix(Type* buffer, size_t height, size_t width)
+ : data(0)
+ {
+  use(buffer, height, width);  
+ } 
+
+ inline size_t size() const
+ {
+  return rows * columns;
+ } 
+   
+ inline size_t span(size_t row, size_t column) const
+ {
+  return row * columns + column;
+ }  
+  
+ inline Type const& get(size_t row, size_t column) const
+ {
+  return data[span(row, column)];
+ }
+ 
+ inline Type& get(size_t row, size_t column)
+ {
+  return data[span(row, column)];
+ }   
+  
+ inline Type const& operator()(size_t row, size_t column) const
+ {
+  return get(row, column);
+ }
+ 
+ inline Type& operator()(size_t row, size_t column)
+ {
+  return get(row, column);
+ } 
+
+ inline matrix& set(size_t row, size_t column, Type const& value)
+ {
+  get(row, column) = value;
+  return *this;
+ }
+ 
+ inline matrix& operator()(size_t row, size_t column, Type const& value)
+ {
+  return set(row, column, value);
+ } 
+ 
+ inline bool empty() const
+ {
+  return rows == 0 && columns == 0;
+ }
+ 
+ inline matrix& reshape(size_t height, size_t width)
+ {
+  if(managed)
+   delete [] data;
+  data = 0; 
+  rows = height;
+  columns = width;
+  if(!empty())
+  {
+   size_t dimensions = size(); 
+   MATRIX_REJECT(dimensions == 0, matrix::reshape(size_t height, size_t width));
+   data = new Type[dimensions];
+   managed = true;
+  } 
+  return *this;
+ }
+ 
+ inline matrix& use(Type* buffer, size_t height, size_t width)
+ {
+  if(managed)
+   delete [] data;
+  data = buffer;
+  managed = false;
+  rows = height;
+  columns = width;
+  if(!empty())
+   MATRIX_REJECT(size() == 0, matrix::use(Type* buffer, size_t height, size_t width));
+  return *this;
+ }
+  
+ inline matrix& use(Type* buffer)
+ {
+  return use(buffer, rows, columns);
+ }
+
+ inline matrix& operator == (matrix const& other) const
+ {
+  if(rows != other.rows || columns != other.columns)
+   return false;
+  Type const* rhs = other.data; 
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   if(data[ddx] != rhs[ddx])
+    return false;
+  return true; 
+ }
+ 
+ inline matrix& operator != (matrix const& other) const
+ {
+  return !(*this == other);
+ } 
+ 
+ template <typename Function>
+ inline matrix& each(Function process)
+ {
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   process(data[ddx]);
+  return *this;
+ } 
+ 
+ template <typename Function>
+ inline matrix& index(Function process)
+ {
+  for(size_t rdx = 0; rdx < rows; ++rdx)
+   for(size_t cdx = 0; cdx < columns; ++cdx)
+    process(get(rdx, cdx), rdx, cdx);
+  return *this;
+ }  
+ 
+ inline matrix& fill(Type const& value)
+ {
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   data[ddx] = value;
+  return *this;
+ }  
+ 
+ inline matrix& operator = (Type const& scalar)
+ {  
+  for(size_t rdx = 0; rdx < rows; ++rdx)
+   for(size_t cdx = 0; cdx < columns; ++cdx)
+    get(rdx, cdx) = (rdx == cdx) ? scalar : 0;      
+  return *this;
+ } 
+ 
+ inline matrix& operator += (Type const& value)
+ {
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   data[ddx] += value;
+  return *this;
+ } 
+ 
+ inline matrix operator + (Type const& value) const
+ {
+  return matrix(*this) += value;
+ }  
+  
+ inline matrix& operator -= (Type const& value)
+ {
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   data[ddx] -= value;
+  return *this;
+ } 
+ 
+ inline matrix operator - (Type const& value) const
+ {
+  return matrix(*this) -= value;
+ }  
+  
+ inline matrix& operator *= (Type const& value)
+ {
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   data[ddx] *= value;
+  return *this;
+ }
+ 
+ inline matrix operator * (Type const& value) const
+ {
+  return matrix(*this) *= value;
+ }   
+  
+ inline matrix& operator /= (Type const& value)
+ {
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   data[ddx] /= value;
+  return *this;
+ } 
+ 
+ inline matrix operator / (Type const& value) const
+ {
+  return matrix(*this) /= value;
+ } 
+
+ inline matrix& operator = (matrix const& other)
+ {
+  reshape(other.rows, other.columns);
+  Type const* rhs = other.data;
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   data[ddx] = rhs[ddx];
+  return *this;
+ }  
+   
+ inline matrix& operator += (matrix const& other)
+ {
+  MATRIX_REJECT(rows != other.rows || columns != other.columns, 
+   matrix::operator += (matrix const& other));
+  Type const* rhs = other.data;
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   data[ddx] += rhs[ddx];
+  return *this;
+ } 
+ 
+ inline matrix operator + (matrix const& other) const
+ {
+  return matrix(*this) += other;
+ }  
+  
+ inline matrix& operator -= (matrix const& other)
+ {
+  MATRIX_REJECT(rows != other.rows || columns != other.columns, 
+   matrix::operator -= (matrix const& other));
+  Type const* rhs = other.data;
+  for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
+   data[ddx] -= rhs[ddx];
+  return *this;
+ } 
+ 
+ inline matrix operator - (matrix const& other) const
+ {
+  return matrix(*this) -= other;
+ } 
+ 
+ inline matrix& operator *= (matrix const& other)
+ {
+  return *this = *this * other;
+ }  
+   
+ inline matrix operator * (matrix const& other) const
+ {
+  MATRIX_REJECT(columns != other.rows, 
+   matrix::operator * (matrix const& other));
+  size_t height = rows;
+  size_t width = other.columns;
+  matrix result = matrix(height, width);
+  for(size_t hdx = 0; hdx < height; ++hdx)
+  {
+   for(size_t wdx = 0; wdx < width; ++wdx)
+   {
+    Type& cell = result(hdx, wdx);
+    for(size_t cdx = 0; cdx < columns; ++cdx)
+     cell += get(hdx, cdx) * other(cdx, wdx);
+   }
+  }   
+  return result;
+ } 
+
+ inline matrix& transpose()
+ {
+  matrix copy = transposed();
+  return swap(copy);
+ }  
+ 
+ inline matrix transposed() const
+ {
+  matrix result(columns, rows);
+  for(size_t rdx = 0; rdx < rows; ++rdx)
+   for(size_t cdx = 0; cdx < columns; ++cdx)
+    result(cdx, rdx) = get(rdx, cdx);
+  return result;
+ }
+ 
+ Type trace() const
+ { 
+  MATRIX_REJECT(rows != columns, matrix::trace());
+  Type sum = 0;
+  for(size_t ddx = 0; ddx < rows; ++ddx)
+   sum += get(ddx, ddx);
+  return sum; 
+ } 
+ 
+ Type determinant() const
+ {
+  MATRIX_REJECT(rows != columns, matrix::determinant());
+  MATRIX_REJECT(size() == 0, matrix::determinant());
+  if(size() == 1)
+   return get(0, 0);
+  return echelon()(rows - 1, columns - 1);
+ }
+
+ Type determinant(size_t excludeRow, size_t excludeColumn) const
+ {
+  MATRIX_REJECT(rows != columns, 
+   matrix::determinant(size_t excludeRow, size_t excludeColumn));
+  MATRIX_REJECT(size() == 0, 
+   matrix::determinant(size_t excludeRow, size_t excludeColumn));
+  matrix buffer = matrix(rows - 1, columns - 1);
+  MATRIX_REJECT(buffer.size() == 0, 
+   matrix::determinant(size_t excludeRow, size_t excludeColumn));
+  for(size_t idx = 0, rdx = 0; rdx < rows; ++rdx)
+  {
+   if(excludeRow == rdx)
+    continue;
+   for(size_t jdx = 0, cdx = 0; cdx < columns; ++cdx)
+   {
+    if(excludeColumn == cdx)
+     continue;
+    buffer(idx, jdx++) = get(rdx, cdx);  
+   }
+   ++idx; 
+  }
+  return buffer.determinant();
+ }
+
+ inline matrix& echelonate()
+ {
+  MATRIX_REJECT(empty(), matrix::echelonate()); 
+  size_t dim = rows;
+  size_t win = dim - 1;
+  for(size_t ddx = 0; ddx < win; ddx++) 
+  {
+   size_t nxt = ddx + 1;
+   size_t prv = ddx - 1;
+   Type cen = get(ddx, ddx);
+   Type div = (ddx == 0 ? 1 : get(prv, prv));
+   for(size_t idx = nxt; idx < dim; idx++)
+   {
+    Type cur = get(idx, ddx);
+    for(size_t jdx = ddx; jdx < columns; jdx++) 
+    {
+     Type& data = get(idx, jdx);
+     Type lft = data * cen;
+     Type rgt = cur * get(ddx, jdx);
+     data = (lft - rgt) / div;
+    }
+   } 
+  }
+  return *this;
+ }  
+ 
+ inline matrix echelon() const
+ {
+  return matrix(*this).echelonate();
+ }   
+ 
+ inline matrix& reduce()
+ {
+  echelonate();
+  size_t dim = columns;
+  for(size_t rdx = 0; rdx < rows; ++rdx)
+  {
+   Type div = get(rdx, rdx);  
+   for(size_t cdx = rdx; cdx < columns; ++cdx)
+    get(rdx, cdx) /= div;
+  }    
+  return *this;
+ }   
+
+ inline matrix reduced() const
+ {
+  return matrix(*this).reduce();
+ } 
+
+ inline matrix inverse() const
+ {
+  MATRIX_REJECT(rows != columns, matrix::inverse());
+  Type major_determinant = determinant();
+  MATRIX_REJECT(major_determinant == 0, matrix::inverse());
+  matrix result = matrix(rows, columns);
+  for(size_t rdx = 0; rdx < rows; ++rdx)
+  {
+   for(size_t cdx = 0; cdx < columns; ++cdx)
+   {
+    Type sign = (((rdx + cdx) & 1) ? -1 : 1);
+    result(rdx, cdx) = sign * determinant(rdx, cdx);
+   }  
+  }
+  result.transpose();
+  return result /= major_determinant;
+ }  
+ 
+ inline matrix& invert()
+ {
+  matrix result = inverse(); 
+  return swap(result);
+ }
+
+ inline matrix solve(matrix const& other)
+ {
+  return inverse() * other;
+ } 
+  
+ template <typename Data>
+ inline void swap(Data& lhs, Data& rhs)
+ {
+  Data tmp = lhs;
+  lhs = rhs;
+  rhs = tmp;
+ }
+ 
+ inline matrix& swap(matrix& other)
+ {
+  swap(rows, other.rows);
+  swap(columns, other.columns);
+  swap(data, other.data);
+  swap(managed, other.managed);
+  return *this;
+ }   
+ 
+ ~matrix()
+ {
+  if(managed)
+   delete [] data;
+ } 
+};
+
+template <typename Type>
+inline void swap(matrix<Type>& lhs, matrix<Type>& rhs)
+{
+ lhs.swap(rhs);
+}
+
+template <typename Type>
+std::ostream& operator << (std::ostream& out, matrix<Type> const& mat)
+{
+ typedef unsigned long uint;
+ uint rmx = mat.rows, cmx = mat.columns;
+ for(uint rdx = 0; rdx < rmx; ++rdx)
+ {
+  if(rdx != 0)
+   out << std::endl;
+  for(uint cdx = 0; cdx < cmx; ++cdx)
+  {
+   if(cdx != 0)
+    out << " ";
+   out << mat(rdx, cdx);
+  } 
+ } 
+ return out;
+}
+
+template <typename Type>
+std::istream& operator >> (std::istream& in, matrix<Type>& mat)
+{
+ typedef unsigned long uint;
+ uint rmx = mat.rows, cmx = mat.columns;
+ cerr << "Rows: " << rmx << " Columns: " << cmx <<endl;
+ for(uint rdx = 0; rdx < rmx; ++rdx)
+ {
+  for(uint cdx = 0; cdx < cmx; ++cdx)
+  {
+   in >> mat(rdx, cdx);
+  } 
+ } 
+ return in;
+}
+
+} // GARDHR_MATRIX_NAMESPACE
+
+#endif // GARDHR_MATRIX_INCLUDED
