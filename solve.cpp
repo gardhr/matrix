@@ -5,7 +5,7 @@
 
 using namespace std;
 
-#include "matrixio.hpp"
+#include "matrix.hpp"
 
 typedef matrix<double> xfm;
 
