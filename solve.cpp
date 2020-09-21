@@ -7,9 +7,7 @@ using namespace std;
 
 #include "matrix.hpp"
 
-typedef matrix<double> xfm;
-
-xfm solve_conglomerate(xfm const& mat)
+matrix solve_conglomerate(matrix const& mat)
 {
  size_t rows = mat.rows;
  size_t columns = mat.columns; 
@@ -17,12 +15,12 @@ xfm solve_conglomerate(xfm const& mat)
   return mat.inverse();
  if(rows > columns)
   return solve_conglomerate(mat.transposed()).transpose();
- xfm known = xfm(rows, rows);
+ matrix known = matrix(rows, rows);
  for(size_t i = 0; i < rows; ++i)
   for(size_t j = 0; j < rows; ++j)
    known(i, j) = mat(i, j);
  size_t width = columns - rows;
- xfm unknown = xfm(rows, width);
+ matrix unknown = matrix(rows, width);
  for(size_t i = 0; i < rows; ++i)
   for(size_t j = 0; j < width; ++j)
    unknown(i, j) = mat(i, rows + j);
@@ -85,12 +83,12 @@ int main(int argc, char** argv)
    if(columns != count)
    {
     if(columns != 0)
-     throw xfm::exception("Invalid input"); 
+     throw matrix::exception("Invalid input"); 
     columns = count;
    }
    ++rows; 
   }
-  *pout << solve_conglomerate(xfm(&data[0], rows, columns)) << endl; 
+  *pout << solve_conglomerate(matrix(&data[0], rows, columns)) << endl; 
  } 
  catch(exception const& error)
  {

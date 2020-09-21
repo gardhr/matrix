@@ -13,7 +13,7 @@
 namespace GARDHR_MATRIX_NAMESPACE {
 
 template <typename Type>
-struct matrix
+struct matrix_t
 {
  typedef std::size_t size_t;
  
@@ -44,30 +44,30 @@ struct matrix
  size_t rows;
  bool managed;
  
- inline matrix()
+ inline matrix_t()
  : data(0), rows(0), columns(0)
  { }   
 
- inline matrix(size_t height, size_t width)
+ inline matrix_t(size_t height, size_t width)
  : data(0)
  {
   reshape(height, width);
  }  
   
- inline matrix(size_t height, size_t width, Type const& scalar)
+ inline matrix_t(size_t height, size_t width, Type const& scalar)
  : data(0)
  {
   reshape(height, width);
   *this = scalar;
  }
  
- inline matrix(matrix const& other)
+ inline matrix_t(matrix_t const& other)
  : data(0)
  {
   *this = other;  
  } 
  
- inline matrix(Type* buffer, size_t height, size_t width)
+ inline matrix_t(Type* buffer, size_t height, size_t width)
  : data(0)
  {
   use(buffer, height, width);  
@@ -103,13 +103,15 @@ struct matrix
   return get(row, column);
  } 
 
- inline matrix& set(size_t row, size_t column, Type const& value)
+ inline matrix_t& set(size_t row, size_t column, Type const& value)
  {
+  MATRIX_REJECT(row >= rows || column >= columns, 
+   matrix_t::set(size_t row, size_t column, Type const& value));
   get(row, column) = value;
   return *this;
  }
  
- inline matrix& operator()(size_t row, size_t column, Type const& value)
+ inline matrix_t& operator()(size_t row, size_t column, Type const& value)
  {
   return set(row, column, value);
  } 
@@ -119,7 +121,7 @@ struct matrix
   return rows == 0 && columns == 0;
  }
  
- inline matrix& reshape(size_t height, size_t width)
+ inline matrix_t& reshape(size_t height, size_t width)
  {
   if(managed)
    delete [] data;
@@ -129,14 +131,14 @@ struct matrix
   if(!empty())
   {
    size_t dimensions = size(); 
-   MATRIX_REJECT(dimensions == 0, matrix::reshape(size_t height, size_t width));
+   MATRIX_REJECT(dimensions == 0, matrix_t::reshape(size_t height, size_t width));
    data = new Type[dimensions];
    managed = true;
   } 
   return *this;
  }
  
- inline matrix& use(Type* buffer, size_t height, size_t width)
+ inline matrix_t& use(Type* buffer, size_t height, size_t width)
  {
   if(managed)
    delete [] data;
@@ -145,16 +147,16 @@ struct matrix
   rows = height;
   columns = width;
   if(!empty())
-   MATRIX_REJECT(size() == 0, matrix::use(Type* buffer, size_t height, size_t width));
+   MATRIX_REJECT(size() == 0, matrix_t::use(Type* buffer, size_t height, size_t width));
   return *this;
  }
   
- inline matrix& use(Type* buffer)
+ inline matrix_t& use(Type* buffer)
  {
   return use(buffer, rows, columns);
  }
 
- inline matrix& operator == (matrix const& other) const
+ inline matrix_t& operator == (matrix_t const& other) const
  {
   if(rows != other.rows || columns != other.columns)
    return false;
@@ -165,13 +167,13 @@ struct matrix
   return true; 
  }
  
- inline matrix& operator != (matrix const& other) const
+ inline matrix_t& operator != (matrix_t const& other) const
  {
   return !(*this == other);
  } 
  
  template <typename Function>
- inline matrix& each(Function process)
+ inline matrix_t& each(Function process)
  {
   for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
    process(data[ddx]);
@@ -179,7 +181,7 @@ struct matrix
  } 
  
  template <typename Function>
- inline matrix& index(Function process)
+ inline matrix_t& index(Function process)
  {
   for(size_t rdx = 0; rdx < rows; ++rdx)
    for(size_t cdx = 0; cdx < columns; ++cdx)
@@ -187,14 +189,14 @@ struct matrix
   return *this;
  }  
  
- inline matrix& fill(Type const& value)
+ inline matrix_t& fill(Type const& value)
  {
   for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
    data[ddx] = value;
   return *this;
  }  
  
- inline matrix& operator = (Type const& scalar)
+ inline matrix_t& operator = (Type const& scalar)
  {  
   for(size_t rdx = 0; rdx < rows; ++rdx)
    for(size_t cdx = 0; cdx < columns; ++cdx)
@@ -202,55 +204,55 @@ struct matrix
   return *this;
  } 
  
- inline matrix& operator += (Type const& value)
+ inline matrix_t& operator += (Type const& value)
  {
   for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
    data[ddx] += value;
   return *this;
  } 
  
- inline matrix operator + (Type const& value) const
+ inline matrix_t operator + (Type const& value) const
  {
-  return matrix(*this) += value;
+  return matrix_t(*this) += value;
  }  
   
- inline matrix& operator -= (Type const& value)
+ inline matrix_t& operator -= (Type const& value)
  {
   for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
    data[ddx] -= value;
   return *this;
  } 
  
- inline matrix operator - (Type const& value) const
+ inline matrix_t operator - (Type const& value) const
  {
-  return matrix(*this) -= value;
+  return matrix_t(*this) -= value;
  }  
   
- inline matrix& operator *= (Type const& value)
+ inline matrix_t& operator *= (Type const& value)
  {
   for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
    data[ddx] *= value;
   return *this;
  }
  
- inline matrix operator * (Type const& value) const
+ inline matrix_t operator * (Type const& value) const
  {
-  return matrix(*this) *= value;
+  return matrix_t(*this) *= value;
  }   
   
- inline matrix& operator /= (Type const& value)
+ inline matrix_t& operator /= (Type const& value)
  {
   for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
    data[ddx] /= value;
   return *this;
  } 
  
- inline matrix operator / (Type const& value) const
+ inline matrix_t operator / (Type const& value) const
  {
-  return matrix(*this) /= value;
+  return matrix_t(*this) /= value;
  } 
 
- inline matrix& operator = (matrix const& other)
+ inline matrix_t& operator = (matrix_t const& other)
  {
   reshape(other.rows, other.columns);
   Type const* rhs = other.data;
@@ -259,48 +261,48 @@ struct matrix
   return *this;
  }  
    
- inline matrix& operator += (matrix const& other)
+ inline matrix_t& operator += (matrix_t const& other)
  {
   MATRIX_REJECT(rows != other.rows || columns != other.columns, 
-   matrix::operator += (matrix const& other));
+   matrix_t::operator += (matrix_t const& other));
   Type const* rhs = other.data;
   for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
    data[ddx] += rhs[ddx];
   return *this;
  } 
  
- inline matrix operator + (matrix const& other) const
+ inline matrix_t operator + (matrix_t const& other) const
  {
-  return matrix(*this) += other;
+  return matrix_t(*this) += other;
  }  
   
- inline matrix& operator -= (matrix const& other)
+ inline matrix_t& operator -= (matrix_t const& other)
  {
   MATRIX_REJECT(rows != other.rows || columns != other.columns, 
-   matrix::operator -= (matrix const& other));
+   matrix_t::operator -= (matrix_t const& other));
   Type const* rhs = other.data;
   for(size_t ddx = 0, dmx = size(); ddx < dmx; ++ddx)
    data[ddx] -= rhs[ddx];
   return *this;
  } 
  
- inline matrix operator - (matrix const& other) const
+ inline matrix_t operator - (matrix_t const& other) const
  {
-  return matrix(*this) -= other;
+  return matrix_t(*this) -= other;
  } 
  
- inline matrix& operator *= (matrix const& other)
+ inline matrix_t& operator *= (matrix_t const& other)
  {
   return *this = *this * other;
  }  
    
- inline matrix operator * (matrix const& other) const
+ inline matrix_t operator * (matrix_t const& other) const
  {
   MATRIX_REJECT(columns != other.rows, 
-   matrix::operator * (matrix const& other));
+   matrix_t::operator * (matrix_t const& other));
   size_t height = rows;
   size_t width = other.columns;
-  matrix result = matrix(height, width);
+  matrix_t result = matrix_t(height, width);
   for(size_t hdx = 0; hdx < height; ++hdx)
   {
    for(size_t wdx = 0; wdx < width; ++wdx)
@@ -313,15 +315,15 @@ struct matrix
   return result;
  } 
 
- inline matrix& transpose()
+ inline matrix_t& transpose()
  {
-  matrix copy = transposed();
+  matrix_t copy = transposed();
   return swap(copy);
  }  
  
- inline matrix transposed() const
+ inline matrix_t transposed() const
  {
-  matrix result(columns, rows);
+  matrix_t result(columns, rows);
   for(size_t rdx = 0; rdx < rows; ++rdx)
    for(size_t cdx = 0; cdx < columns; ++cdx)
     result(cdx, rdx) = get(rdx, cdx);
@@ -330,7 +332,7 @@ struct matrix
  
  Type trace() const
  { 
-  MATRIX_REJECT(rows != columns, matrix::trace());
+  MATRIX_REJECT(rows != columns, matrix_t::trace());
   Type sum = 0;
   for(size_t ddx = 0; ddx < rows; ++ddx)
    sum += get(ddx, ddx);
@@ -339,8 +341,8 @@ struct matrix
  
  Type determinant() const
  {
-  MATRIX_REJECT(rows != columns, matrix::determinant());
-  MATRIX_REJECT(size() == 0, matrix::determinant());
+  MATRIX_REJECT(rows != columns, matrix_t::determinant());
+  MATRIX_REJECT(size() == 0, matrix_t::determinant());
   if(size() == 1)
    return get(0, 0);
   return echelon()(rows - 1, columns - 1);
@@ -349,12 +351,12 @@ struct matrix
  Type determinant(size_t excludeRow, size_t excludeColumn) const
  {
   MATRIX_REJECT(rows != columns, 
-   matrix::determinant(size_t excludeRow, size_t excludeColumn));
+   matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
   MATRIX_REJECT(size() == 0, 
-   matrix::determinant(size_t excludeRow, size_t excludeColumn));
-  matrix buffer = matrix(rows - 1, columns - 1);
+   matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
+  matrix_t buffer = matrix_t(rows - 1, columns - 1);
   MATRIX_REJECT(buffer.size() == 0, 
-   matrix::determinant(size_t excludeRow, size_t excludeColumn));
+   matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
   for(size_t idx = 0, rdx = 0; rdx < rows; ++rdx)
   {
    if(excludeRow == rdx)
@@ -370,9 +372,9 @@ struct matrix
   return buffer.determinant();
  }
 
- inline matrix& echelonate()
+ inline matrix_t& echelonate()
  {
-  MATRIX_REJECT(empty(), matrix::echelonate()); 
+  MATRIX_REJECT(empty(), matrix_t::echelonate()); 
   size_t dim = rows;
   size_t win = dim - 1;
   for(size_t ddx = 0; ddx < win; ddx++) 
@@ -396,12 +398,12 @@ struct matrix
   return *this;
  }  
  
- inline matrix echelon() const
+ inline matrix_t echelon() const
  {
-  return matrix(*this).echelonate();
+  return matrix_t(*this).echelonate();
  }   
  
- inline matrix& reduce()
+ inline matrix_t& reduce()
  {
   echelonate();
   size_t dim = columns;
@@ -414,17 +416,17 @@ struct matrix
   return *this;
  }   
 
- inline matrix reduced() const
+ inline matrix_t reduced() const
  {
-  return matrix(*this).reduce();
+  return matrix_t(*this).reduce();
  } 
 
- inline matrix inverse() const
+ inline matrix_t inverse() const
  {
-  MATRIX_REJECT(rows != columns, matrix::inverse());
+  MATRIX_REJECT(rows != columns, matrix_t::inverse());
   Type major_determinant = determinant();
-  MATRIX_REJECT(major_determinant == 0, matrix::inverse());
-  matrix result = matrix(rows, columns);
+  MATRIX_REJECT(major_determinant == 0, matrix_t::inverse());
+  matrix_t result = matrix_t(rows, columns);
   for(size_t rdx = 0; rdx < rows; ++rdx)
   {
    for(size_t cdx = 0; cdx < columns; ++cdx)
@@ -437,13 +439,13 @@ struct matrix
   return result /= major_determinant;
  }  
  
- inline matrix& invert()
+ inline matrix_t& invert()
  {
-  matrix result = inverse(); 
+  matrix_t result = inverse(); 
   return swap(result);
  }
 
- inline matrix solve(matrix const& other)
+ inline matrix_t solve(matrix_t const& other)
  {
   return inverse() * other;
  } 
@@ -456,7 +458,7 @@ struct matrix
   rhs = tmp;
  }
  
- inline matrix& swap(matrix& other)
+ inline matrix_t& swap(matrix_t& other)
  {
   swap(rows, other.rows);
   swap(columns, other.columns);
@@ -465,7 +467,7 @@ struct matrix
   return *this;
  }   
  
- ~matrix()
+ ~matrix_t()
  {
   if(managed)
    delete [] data;
@@ -473,13 +475,13 @@ struct matrix
 };
 
 template <typename Type>
-inline void swap(matrix<Type>& lhs, matrix<Type>& rhs)
+inline void swap(matrix_t<Type>& lhs, matrix_t<Type>& rhs)
 {
  lhs.swap(rhs);
 }
 
 template <typename Type>
-std::ostream& operator << (std::ostream& out, matrix<Type> const& mat)
+std::ostream& operator << (std::ostream& out, matrix_t<Type> const& mat)
 {
  typedef unsigned long uint;
  uint rmx = mat.rows, cmx = mat.columns;
@@ -498,11 +500,10 @@ std::ostream& operator << (std::ostream& out, matrix<Type> const& mat)
 }
 
 template <typename Type>
-std::istream& operator >> (std::istream& in, matrix<Type>& mat)
+std::istream& operator >> (std::istream& in, matrix_t<Type>& mat)
 {
  typedef unsigned long uint;
  uint rmx = mat.rows, cmx = mat.columns;
- cerr << "Rows: " << rmx << " Columns: " << cmx <<endl;
  for(uint rdx = 0; rdx < rmx; ++rdx)
  {
   for(uint cdx = 0; cdx < cmx; ++cdx)
@@ -512,6 +513,8 @@ std::istream& operator >> (std::istream& in, matrix<Type>& mat)
  } 
  return in;
 }
+
+typedef matrix_t<double> matrix;
 
 } // GARDHR_MATRIX_NAMESPACE
 
