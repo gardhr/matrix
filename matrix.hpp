@@ -103,6 +103,26 @@ struct matrix_t
   return get(row, column);
  } 
 
+ inline Type const& get(size_t column) const
+ {
+  return get(0, column);
+ }
+ 
+ inline Type& get(size_t column)
+ {
+  return get(0, column);
+ } 
+
+ inline Type const& operator()(size_t column) const
+ {
+  return get(column);
+ }
+ 
+ inline Type& operator()(size_t column)
+ {
+  return get(column);
+ } 
+
  inline matrix_t& set(size_t row, size_t column, Type const& value)
  {
   MATRIX_REJECT(row >= rows || column >= columns, 
