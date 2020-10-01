@@ -390,7 +390,7 @@ struct matrix_t
 
  inline matrix_t& echelonate()
  {
-  MATRIX_REJECT(size() == 0, matrix_t::echelonate()); 
+  MATRIX_REJECT((rows * columns) == 0, matrix_t::echelonate()); 
   size_t dim = rows;
   size_t win = dim - 1;
   for(size_t ddx = 0; ddx < win; ddx++) 
