@@ -36,7 +36,7 @@
 
  bool empty() const
  
- bool bounds(size_t row, size_t column)
+ bool bounds(size_t row, size_t column) const
 
  matrix_t < Type > & reshape(size_t height, size_t width)
 

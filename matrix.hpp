@@ -173,7 +173,7 @@ struct matrix_t
   return !(*this == other);
  } 
  
- inline bool bounds(size_t row, size_t column)
+ inline bool bounds(size_t row, size_t column) const
  {
   return row < rows && column < columns; 
  } 
