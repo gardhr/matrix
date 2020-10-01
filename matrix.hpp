@@ -366,7 +366,7 @@ struct matrix_t
 
  Type determinant(size_t excludeRow, size_t excludeColumn) const
  {
-  MATRIX_REJECT(rows != columns), 
+  MATRIX_REJECT(rows != columns, 
    matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
   MATRIX_REJECT(size() == 0, 
    matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
@@ -440,8 +440,8 @@ struct matrix_t
  inline matrix_t inverse() const
  {
   MATRIX_REJECT(rows != columns, matrix_t::inverse());
-  Type major_determinant = determinant();
-  MATRIX_REJECT(major_determinant == 0, matrix_t::inverse());
+  Type determinant_ = determinant();
+  MATRIX_REJECT(determinant_ == 0, matrix_t::inverse());
   matrix_t result = matrix_t(rows, columns);
   for(size_t rdx = 0; rdx < rows; ++rdx)
   {
@@ -452,7 +452,7 @@ struct matrix_t
    }  
   }
   result.transpose();
-  return result /= major_determinant;
+  return result /= determinant_;
  }  
  
  inline matrix_t& invert()
