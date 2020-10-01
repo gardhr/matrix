@@ -110,7 +110,7 @@
 
  matrix_t<Type>& invert()
 
- matrix_t<Type> solve(matrix_t<Type> const& other)
+ matrix_t<Type> solve(matrix_t<Type> const& other) const
 
  matrix_t<Type>& swap(matrix_t<Type>& other)
 
