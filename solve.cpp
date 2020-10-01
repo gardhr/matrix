@@ -67,6 +67,7 @@ int main(int argc, char** argv)
   vector<double> data;
   size_t columns = 0;
   size_t rows = 0;
+  
   while(getline(*pin, input))
   {
    size_t count = 0;
