@@ -307,6 +307,11 @@ struct matrix_t
   return *this = *this * other;
  }  
    
+ inline bool right(matrix_t const& other) const
+ {
+  return columns == other.rows;
+ }  
+   
  inline matrix_t operator * (matrix_t const& other) const
  {
   MATRIX_REJECT(columns != other.rows, 
@@ -361,7 +366,7 @@ struct matrix_t
 
  Type determinant(size_t excludeRow, size_t excludeColumn) const
  {
-  MATRIX_REJECT(rows != columns, 
+  MATRIX_REJECT(rows != columns), 
    matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
   MATRIX_REJECT(size() == 0, 
    matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
@@ -385,7 +390,7 @@ struct matrix_t
 
  inline matrix_t& echelonate()
  {
-  MATRIX_REJECT(empty(), matrix_t::echelonate()); 
+  MATRIX_REJECT(size() == 0, matrix_t::echelonate()); 
   size_t dim = rows;
   size_t win = dim - 1;
   for(size_t ddx = 0; ddx < win; ddx++) 
@@ -494,8 +499,8 @@ inline void swap(matrix_t<Type>& lhs, matrix_t<Type>& rhs)
 template <typename Type>
 std::ostream& operator << (std::ostream& out, matrix_t<Type> const& mat)
 {
- typedef unsigned long uint;
- uint rmx = mat.rows, cmx = mat.columns;
+ size_t rmx = mat.rows;
+ size_t cmx = mat.columns; 
  for(uint rdx = 0; rdx < rmx; ++rdx)
  {
   if(rdx != 0)
