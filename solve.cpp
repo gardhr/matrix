@@ -61,7 +61,8 @@ int main(int argc, char** argv)
   if(outfile == "stdout")
    pout = &cout;
   else
-   out.open(outfile); 
+   out.open(outfile);
+ 
   string input;
   vector<double> data;
   size_t columns = 0;
