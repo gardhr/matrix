@@ -456,7 +456,7 @@ struct matrix_t
   return swap(result);
  }
 
- inline matrix_t solve(matrix_t const& other)
+ inline matrix_t solve(matrix_t const& other) const
  {
   return inverse() * other;
  } 
