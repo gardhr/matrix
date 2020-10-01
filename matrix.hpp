@@ -7,8 +7,8 @@
 
 #include <exception>
 #include <cstddef>
-#include <istream>
 #include <ostream>
+#include <istream>
 
 namespace GARDHR_MATRIX_NAMESPACE {
 
@@ -103,29 +103,10 @@ struct matrix_t
   return get(row, column);
  } 
 
- inline Type const& get(size_t column) const
- {
-  return get(0, column);
- }
- 
- inline Type& get(size_t column)
- {
-  return get(0, column);
- } 
-
- inline Type const& operator()(size_t column) const
- {
-  return get(column);
- }
- 
- inline Type& operator()(size_t column)
- {
-  return get(column);
- } 
-
  inline matrix_t& set(size_t row, size_t column, Type const& value)
  {
-  MATRIX_REJECT(row >= rows || column >= columns, 
+  MATRIX_REJECT(
+   row >= rows || column >= columns, 
    matrix_t::set(size_t row, size_t column, Type const& value));
   get(row, column) = value;
   return *this;
@@ -176,7 +157,7 @@ struct matrix_t
   return use(buffer, rows, columns);
  }
 
- inline matrix_t& operator == (matrix_t const& other) const
+ inline bool operator == (matrix_t const& other) const
  {
   if(rows != other.rows || columns != other.columns)
    return false;
@@ -187,10 +168,20 @@ struct matrix_t
   return true; 
  }
  
- inline matrix_t& operator != (matrix_t const& other) const
+ inline bool operator != (matrix_t const& other) const
  {
   return !(*this == other);
  } 
+ 
+ inline bool bounds(size_t row, size_t column)
+ {
+  return row < rows && column < columns; 
+ } 
+ 
+ inline bool square() const
+ {
+  return rows == columns;
+ }  
  
  template <typename Function>
  inline matrix_t& each(Function process)
@@ -524,6 +515,7 @@ std::istream& operator >> (std::istream& in, matrix_t<Type>& mat)
 {
  typedef unsigned long uint;
  uint rmx = mat.rows, cmx = mat.columns;
+// cerr << "Rows: " << rmx << " Columns: " << cmx <<endl;
  for(uint rdx = 0; rdx < rmx; ++rdx)
  {
   for(uint cdx = 0; cdx < cmx; ++cdx)
