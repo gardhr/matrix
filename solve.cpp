@@ -74,6 +74,7 @@ int main(int argc, char** argv)
    stringstream ss(input);
    double value;
    vector<double> next;
+   
    while(ss >> value)
    {
     data.push_back(value);
