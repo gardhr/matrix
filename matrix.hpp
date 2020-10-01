@@ -513,8 +513,8 @@ std::ostream& operator << (std::ostream& out, matrix_t<Type> const& mat)
 template <typename Type>
 std::istream& operator >> (std::istream& in, matrix_t<Type>& mat)
 {
- typedef unsigned long uint;
- uint rmx = mat.rows, cmx = mat.columns;
+ size_t rmx = mat.rows;
+ size_t cmx = mat.columns;
 // cerr << "Rows: " << rmx << " Columns: " << cmx <<endl;
  for(uint rdx = 0; rdx < rmx; ++rdx)
  {
