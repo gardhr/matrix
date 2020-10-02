@@ -457,8 +457,8 @@ struct matrix_t
  
  inline matrix_t& invert()
  {
-  matrix_t result = inverse(); 
-  return swap(result);
+  matrix_t copy = inverse(); 
+  return swap(copy);
  }
 
  inline matrix_t solve(matrix_t const& other) const
