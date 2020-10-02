@@ -38,7 +38,7 @@ int main(int argc, char** argv)
    cout << " Note:" << endl;   
    cout << "Read from standard input if INFILE is set to `stdin` (or unspecified)" << endl;   
    cout << "Written to standard output if OUTFILE is set to `stdout` (or unspecified)" << endl;
-   cout << " Example: solve 2x + 5y = 41, 7x + 11x = 98" << endl << endl;  
+   cout << " Example: solve 2x + 5y = 41, 7x + 11y = 98" << endl << endl;  
    cout << argv[0] << endl;   
    cout << "2 5 41 [ENTER]" << endl;
    cout << "7 11 98 [ENTER]" << endl;
