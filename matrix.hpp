@@ -482,6 +482,65 @@ struct matrix_t
   swap(managed, other.managed);
   return *this;
  }   
+
+ template <typename Value>
+ static inline std::string text(Value const& value)
+ {
+  stringstream ss;
+  ss << value;
+  return ss.str();
+ }
+
+ std::string stringify(bool punctuate = true) const
+ {
+  size_t rmx = rows;
+  size_t cmx = columns;
+  std::string crf = "\n";
+  std::string lft;
+  std::string rgt;
+  std::string cma;
+  if(punctuate)
+  {
+   lft = "[";
+   rgt = "]";
+   cma = ",";
+   crf = "";
+  }
+  if(size() == 0) 
+   return "[[]]";
+  std::string result = lft;
+  size_t lst = rmx - 1; 
+  size_t non = cmx - 1;
+  for(uint rdx = 0; rdx < rmx; ++rdx)
+  {
+   result += lft; 
+   if(rdx != 0)
+    result += crf;    
+   for(uint cdx = 0; cdx < cmx; ++cdx)
+   {
+    if(cdx != 0)
+     result += cma;
+    result += text(get(rdx, cdx));
+    if(cdx != non)
+     result += " ";     
+   } 
+   result += rgt;
+   if(rdx != lst)
+    result += cma;    
+  } 
+  result += rgt;
+  return result;  
+ } 
+
+ inline std::string text() const
+ {
+  return stringify(false);
+ } 
+ 
+ inline std::string punctuate() const
+ {
+  return stringify(true);
+ }  
  
  ~matrix_t()
  {
@@ -499,20 +558,7 @@ inline void swap(matrix_t<Type>& lhs, matrix_t<Type>& rhs)
 template <typename Type>
 std::ostream& operator << (std::ostream& out, matrix_t<Type> const& mat)
 {
- size_t rmx = mat.rows;
- size_t cmx = mat.columns; 
- for(uint rdx = 0; rdx < rmx; ++rdx)
- {
-  if(rdx != 0)
-   out << std::endl;
-  for(uint cdx = 0; cdx < cmx; ++cdx)
-  {
-   if(cdx != 0)
-    out << " ";
-   out << mat(rdx, cdx);
-  } 
- } 
- return out;
+ return out << mat.text();
 }
 
 template <typename Type>
