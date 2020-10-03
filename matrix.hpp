@@ -583,7 +583,7 @@ struct matrix_t
    if(rectangular == 0)
     break;
    if(columns != 0)
-    MATRIX_REJECT(columns != rectangular, matrix_t::read(istream& in));
+    MATRIX_REJECT(columns != rectangular, matrix_t::read(string const& input));
    columns = rectangular; 
    ++rows;
   }
