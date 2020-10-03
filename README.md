@@ -114,6 +114,12 @@
 
  matrix_t < Type > & swap(matrix_t < Type > & other)
 
+ std::string text(bool punctuate = false) const
+ 
+ matrix_t& read(std::string const& input)
+ 
+ matrix_t& read(std::istream& in)
+
  ~matrix_t < Type > ()
 
  template  < typename Type > 
