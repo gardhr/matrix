@@ -9,6 +9,9 @@
 #include <cstddef>
 #include <ostream>
 #include <istream>
+#include <vector>
+#include <string>
+#include <sstream>
 
 namespace GARDHR_MATRIX_NAMESPACE {
 
@@ -16,7 +19,10 @@ template <typename Type>
 struct matrix_t
 {
  typedef std::size_t size_t;
- 
+ typedef std::string string;
+ typedef std::istream istream;
+ typedef std::stringstream sstream;
+  
  struct exception : std::exception
  {
   exception(char const* text)
@@ -405,9 +411,9 @@ struct matrix_t
     for(size_t jdx = ddx; jdx < columns; jdx++) 
     {
      Type& data = get(idx, jdx);
-     Type lft = data * cen;
-     Type rgt = cur * get(ddx, jdx);
-     data = (lft - rgt) / div;
+     Type left = data * cen;
+     Type right = cur * get(ddx, jdx);
+     data = (left - right) / div;
     }
    } 
   }
@@ -484,63 +490,119 @@ struct matrix_t
  }   
 
  template <typename Value>
- static inline std::string text(Value const& value)
+ static inline string stringify(Value const& value)
  {
-  stringstream ss;
+  sstream ss;
   ss << value;
   return ss.str();
  }
 
- std::string stringify(bool punctuate = true) const
+ string text(bool punctuate = false) const
  {
   size_t rmx = rows;
   size_t cmx = columns;
-  std::string crf = "\n";
-  std::string lft;
-  std::string rgt;
-  std::string cma;
+  string crlf = "\n";
+  string open;
+  string close;
+  string comma;
   if(punctuate)
   {
-   lft = "[";
-   rgt = "]";
-   cma = ",";
-   crf = "";
+   open = "[";
+   close = "]";
+   comma = ",";
+   crlf = "";
   }
   if(size() == 0) 
    return "[[]]";
-  std::string result = lft;
+  std::string result = open;
   size_t lst = rmx - 1; 
   size_t non = cmx - 1;
   for(uint rdx = 0; rdx < rmx; ++rdx)
   {
-   result += lft; 
+   result += open; 
    if(rdx != 0)
-    result += crf;    
+    result += crlf;    
    for(uint cdx = 0; cdx < cmx; ++cdx)
    {
     if(cdx != 0)
-     result += cma;
-    result += text(get(rdx, cdx));
+     result += comma;
+    result += stringify(get(rdx, cdx));
     if(cdx != non)
      result += " ";     
    } 
-   result += rgt;
+   result += close;
    if(rdx != lst)
-    result += cma;    
+    result += comma;    
   } 
-  result += rgt;
+  result += close;
   return result;  
- } 
+ }
 
- inline std::string text() const
+ static string& replace(string& haystack, string const& needle, string const& patch)
  {
-  return stringify(false);
+  size_t idx = 0;
+  size_t nmx = needle.length();
+  size_t pmx = patch.length(); 
+  for(;;)
+  {
+   idx = haystack.find(needle, idx);
+   if(idx == string::npos)
+    break;
+   haystack.replace(idx, nmx, patch);
+   idx += pmx; 
+  }
+  return haystack;
+ }
+ 
+ matrix_t& read(string const& input)
+ {
+  string crlf = "\n";
+  string open = "[";
+  string close = "]";
+  string comma = ",";
+  string space = " ";
+  string lines = input;
+  replace(lines, open, space);
+  replace(lines, close, crlf);
+  replace(lines, comma, space);
+  sstream ss(lines);
+  string line;
+  std::vector<Type> values;
+  size_t rows = 0;
+  size_t columns = 0;
+  while(getline(ss, line))
+  {
+   sstream ls(line);
+   size_t rectangular = 0;
+   Type value;
+   while(ls >> value)
+   { 
+    values.push_back(value);
+    ++rectangular;   
+   }
+   if(rectangular == 0)
+    break;
+   if(columns != 0)
+    MATRIX_REJECT(columns != rectangular, matrix_t::read(istream& in));
+   columns = rectangular; 
+   ++rows;
+  }
+  return *this = matrix_t(&values[0], rows, columns);
  } 
  
- inline std::string punctuate() const
+ matrix_t& read(istream& in)
  {
-  return stringify(true);
- }  
+  string line;
+  string lines;
+  while(getline(in, line))
+  {
+   size_t len = line.length();
+   if(len == 0)
+    break;
+   lines += line + "\n";
+  }
+  return read(lines);
+ }
  
  ~matrix_t()
  {
@@ -556,24 +618,15 @@ inline void swap(matrix_t<Type>& lhs, matrix_t<Type>& rhs)
 }
 
 template <typename Type>
-std::ostream& operator << (std::ostream& out, matrix_t<Type> const& mat)
+inline std::ostream& operator << (std::ostream& out, matrix_t<Type> const& mat)
 {
  return out << mat.text();
 }
 
 template <typename Type>
-std::istream& operator >> (std::istream& in, matrix_t<Type>& mat)
+inline std::istream& operator >> (std::istream& in, matrix_t<Type>& mat)
 {
- size_t rmx = mat.rows;
- size_t cmx = mat.columns;
-// cerr << "Rows: " << rmx << " Columns: " << cmx <<endl;
- for(uint rdx = 0; rdx < rmx; ++rdx)
- {
-  for(uint cdx = 0; cdx < cmx; ++cdx)
-  {
-   in >> mat(rdx, cdx);
-  } 
- } 
+ mat.read(in);
  return in;
 }
 

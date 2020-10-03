@@ -1,29 +1,26 @@
+#include "matrix"
 #include <fstream>
 #include <iostream>
-#include <vector>
-#include <sstream>
 
 using namespace std;
 
-#include "matrix.hpp"
-
-matrix solve_conglomerate(matrix const& mat)
+matrix solve_conglomerate(matrix const& block)
 {
- size_t rows = mat.rows;
- size_t columns = mat.columns; 
+ size_t rows = block.rows;
+ size_t columns = block.columns; 
  if(rows == columns)
-  return mat.inverse();
+  return block.inverse();
  if(rows > columns)
-  return solve_conglomerate(mat.transposed()).transpose();
+  return solve_conglomerate(block.transposed()).transpose();
  matrix known = matrix(rows, rows);
- for(size_t i = 0; i < rows; ++i)
+ for(size_t idx = 0; idx < rows; ++idx)
   for(size_t j = 0; j < rows; ++j)
-   known(i, j) = mat(i, j);
+   known(idx, j) = block(idx, j);
  size_t width = columns - rows;
  matrix unknown = matrix(rows, width);
- for(size_t i = 0; i < rows; ++i)
+ for(size_t idx = 0; idx < rows; ++idx)
   for(size_t j = 0; j < width; ++j)
-   unknown(i, j) = mat(i, rows + j);
+   unknown(idx, j) = block(idx, rows + j);
  return known.solve(unknown);
 }
 
@@ -33,7 +30,7 @@ int main(int argc, char** argv)
  {
   if(argc < 2 || argc > 3)
   {
-   cout << "Conglomerated Matrix Solver" << endl;
+   cout << "Conglomerated matrix Solver" << endl;
    cout << "Usage: " << argv[0] << " INFILE OUTFILE" << endl;
    cout << " Note:" << endl;   
    cout << "Read from standard input if INFILE is set to `stdin` (or unspecified)" << endl;   
