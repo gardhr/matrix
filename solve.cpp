@@ -14,13 +14,13 @@ matrix solve_conglomerate(matrix const& block)
   return solve_conglomerate(block.transposed()).transpose();
  matrix known = matrix(rows, rows);
  for(size_t idx = 0; idx < rows; ++idx)
-  for(size_t j = 0; j < rows; ++j)
-   known(idx, j) = block(idx, j);
+  for(size_t jdx = 0; jdx < rows; ++jdx)
+   known(idx, jdx) = block(idx, jdx);
  size_t width = columns - rows;
  matrix unknown = matrix(rows, width);
  for(size_t idx = 0; idx < rows; ++idx)
-  for(size_t j = 0; j < width; ++j)
-   unknown(idx, j) = block(idx, rows + j);
+  for(size_t jdx = 0; jdx < width; ++jdx)
+   unknown(idx, jdx) = block(idx, rows + jdx);
  return known.solve(unknown);
 }
 
@@ -59,35 +59,10 @@ int main(int argc, char** argv)
    pout = &cout;
   else
    out.open(outfile);
- 
-  string input;
-  vector<double> data;
-  size_t columns = 0;
-  size_t rows = 0;
-  
-  while(getline(*pin, input))
-  {
-   size_t count = 0;
-   stringstream ss(input);
-   double value;
-   vector<double> next;
    
-   while(ss >> value)
-   {
-    data.push_back(value);
-    ++count;
-   }
-   if(count == 0)
-    break; 
-   if(columns != count)
-   {
-    if(columns != 0)
-     throw matrix::exception("Invalid input"); 
-    columns = count;
-   }
-   ++rows; 
-  }
-  *pout << solve_conglomerate(matrix(&data[0], rows, columns)) << endl; 
+  matrix input;
+  input.read(*pin);
+  *pout << solve_conglomerate(input) << endl; 
  } 
  catch(exception const& error)
  {
