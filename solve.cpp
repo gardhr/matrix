@@ -30,7 +30,7 @@ int main(int argc, char** argv)
  {
   if(argc < 2 || argc > 3)
   {
-   cout << "Conglomerated Matrix Solver" << endl;
+   cout << "Conglomerate Matrix Solver" << endl;
    cout << "Usage: " << argv[0] << " INFILE OUTFILE" << endl;
    cout << " Note:" << endl;   
    cout << "Read from standard input if INFILE is set to `stdin` (or unspecified)" << endl;   
