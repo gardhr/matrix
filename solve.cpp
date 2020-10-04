@@ -62,7 +62,7 @@ int main(int argc, char** argv)
    out.open(outfile);
    
   matrix input;
-  input.read(*pin);
+  *pin >> input;
   *pout << solve_conglomerate(input) << endl; 
  } 
  catch(exception const& error)
