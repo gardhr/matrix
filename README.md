@@ -1,5 +1,18 @@
 # matrix
 
+Single-header matrix library for C++. Simply include "matrix.hpp" (or "matrix" if importing default namespace). 
+
+If matrix_t or matrix are already defined, library can be wrapped in a namespace:
+
+```cpp
+#define GARDHR_MATRIX_NAMESPACE xyz
+#include "matrix.hpp"
+xyz::matrix m(3, 5);
+
+```
+
+
+
 ```cpp
 
  template <typename Type> class matrix_t;
