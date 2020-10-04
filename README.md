@@ -1,7 +1,10 @@
 # matrix
 
 ```cpp
- typedef matrix_t <double>  matrix;
+
+ template <typename Type> class matrix_t;
+ 
+ typedef matrix_t <double> matrix;
 
  matrix_t <Type> ()
 
