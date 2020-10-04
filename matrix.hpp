@@ -364,7 +364,7 @@ struct matrix_t
  Type determinant() const
  {
   MATRIX_REJECT(rows != columns, matrix_t::determinant());
-  MATRIX_REJECT(size() == 0, matrix_t::determinant());
+  MATRIX_REJECT((rows * columns) == 0, matrix_t::determinant());
   if(size() == 1)
    return get(0, 0);
   return echelon()(rows - 1, columns - 1);
@@ -374,10 +374,10 @@ struct matrix_t
  {
   MATRIX_REJECT(rows != columns, 
    matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
-  MATRIX_REJECT(size() == 0, 
+  MATRIX_REJECT((rows * columns) == 0, 
    matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
   matrix_t buffer = matrix_t(rows - 1, columns - 1);
-  MATRIX_REJECT(buffer.size() == 0, 
+  MATRIX_REJECT((buffer.rows * buffer.columns) == 0, 
    matrix_t::determinant(size_t excludeRow, size_t excludeColumn));
   for(size_t idx = 0, rdx = 0; rdx < rows; ++rdx)
   {
@@ -473,7 +473,7 @@ struct matrix_t
  } 
   
  template <typename Data>
- inline void swap(Data& lhs, Data& rhs)
+ static inline void swap_(Data& lhs, Data& rhs)
  {
   Data tmp = lhs;
   lhs = rhs;
@@ -482,20 +482,12 @@ struct matrix_t
  
  inline matrix_t& swap(matrix_t& other)
  {
-  swap(rows, other.rows);
-  swap(columns, other.columns);
-  swap(data, other.data);
-  swap(managed, other.managed);
+  swap_(rows, other.rows);
+  swap_(columns, other.columns);
+  swap_(data, other.data);
+  swap_(managed, other.managed);
   return *this;
  }   
-
- template <typename Value>
- static inline string stringify(Value const& value)
- {
-  sstream ss;
-  ss << value;
-  return ss.str();
- }
 
  string text(bool punctuate = false) const
  {
@@ -526,7 +518,9 @@ struct matrix_t
    {
     if(cdx != 0)
      result += comma;
-    result += stringify(get(rdx, cdx));
+    sstream ss;
+    ss << get(rdx, cdx); 
+    result += ss.str();
     if(cdx != non)
      result += " ";     
    } 
@@ -538,7 +532,7 @@ struct matrix_t
   return result;  
  }
 
- static string& replace(string& haystack, string const& needle, string const& patch)
+ static string& replace_(string& haystack, string const& needle, string const& patch)
  {
   size_t idx = 0;
   size_t nmx = needle.length();
@@ -562,9 +556,9 @@ struct matrix_t
   string comma = ",";
   string space = " ";
   string lines = input;
-  replace(lines, open, space);
-  replace(lines, close, crlf);
-  replace(lines, comma, space);
+  replace_(lines, open, space);
+  replace_(lines, close, crlf);
+  replace_(lines, comma, space);
   sstream ss(lines);
   string line;
   std::vector<Type> values;
