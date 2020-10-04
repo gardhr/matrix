@@ -130,9 +130,9 @@
 
  void swap(matrix_t& lhs, matrix_t& rhs)
 
- std::ostream& operator  << (std::ostream& out, matrix_t const& mat)
+ std::ostream& operator << (std::ostream& out, matrix_t const& mat)
 
- std::istream& operator >>  (std::istream& in, matrix_t& mat)
+ std::istream& operator >> (std::istream& in, matrix_t& mat)
 
 ``` 
  
