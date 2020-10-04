@@ -64,37 +64,37 @@
 
  matrix_t& operator += (Type const& value)
 
- matrix_toperator + (Type const& value) const
+ matrix_t operator + (Type const& value) const
  
  matrix_t& operator -= (Type const& value)
 
- matrix_toperator - (Type const& value) const
+ matrix_t operator - (Type const& value) const
 
  matrix_t& operator *= (Type const& value)
 
- matrix_toperator * (Type const& value) const
+ matrix_t operator * (Type const& value) const
 
  matrix_t& operator /= (Type const& value)
 
- matrix_toperator / (Type const& value) const
+ matrix_t operator / (Type const& value) const
 
  matrix_t& operator = (matrix_t const& other)
   
  matrix_t& operator += (matrix_t const& other)
 
- matrix_toperator + (matrix_t const& other) const
+ matrix_t operator + (matrix_t const& other) const
  
  matrix_t& operator -= (matrix_t const& other)
 
- matrix_toperator - (matrix_t const& other) const
+ matrix_t operator - (matrix_t const& other) const
 
  matrix_t& operator *= (matrix_t const& other)
  
- matrix_toperator * (matrix_t const& other) const
+ matrix_t operator * (matrix_t const& other) const
 
  matrix_t& transpose()
 
- matrix_ttransposed() const
+ matrix_t transposed() const
 
  Type trace() const
 
@@ -104,17 +104,17 @@
 
  matrix_t& echelonate() 
  
- matrix_techelon() const
+ matrix_t echelon() const
 
  matrix_t& reduce()
 
- matrix_treduced() const
+ matrix_t reduced() const
 
- matrix_tinverse() const
+ matrix_t inverse() const
 
  matrix_t& invert()
 
- matrix_tsolve(matrix_t const& other) const
+ matrix_t solve(matrix_t const& other) const
 
  matrix_t& swap(matrix_t& other)
 
@@ -128,14 +128,11 @@
 
  ~matrix_t()
 
- template  <typename Type> 
  void swap(matrix_t& lhs, matrix_t& rhs)
 
- template  <typename Type> 
- std::ostream& operator  < < (std::ostream& out, matrix_t const& mat)
+ std::ostream& operator  << (std::ostream& out, matrix_t const& mat)
 
- template  <typename Type> 
- std::istream& operator > >  (std::istream& in, matrix_t& mat)
+ std::istream& operator >>  (std::istream& in, matrix_t& mat)
 
 ``` 
  
