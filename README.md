@@ -4,7 +4,7 @@
 
  template <typename Type> class matrix_t;
  
- typedef matrix_t <double> matrix;
+ typedef matrix_t<double> matrix;
 
  matrix_t()
 
