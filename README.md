@@ -160,18 +160,23 @@
 
  std::string text(bool punctuate = false) const
  
+// Parse input and set matrix accordingly  
  matrix_t& read(std::string const& input)
- 
+
+// Parse from stream instead 
  matrix_t& read(std::istream& in)
 
 /*
   Non-member functions
 */
 
+// Ie: lhs.swap(rhs);
  void swap(matrix_t& lhs, matrix_t& rhs)
 
+// Ie: out << mat.text();
  std::ostream& operator << (std::ostream& out, matrix_t const& mat)
 
+// Ie: mat.read(in);
  std::istream& operator >> (std::istream& in, matrix_t& mat)
 
 ``` 
