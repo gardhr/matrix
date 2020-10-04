@@ -6,42 +6,62 @@
  
  typedef matrix_t<double> matrix;
 
+// Create an empty matrix
  matrix_t()
 
+// Ie: rows == height, columns == width
  matrix_t(size_t height, size_t width)
-  
+
+// Diagonals set to scalar and rest to "zero" 
  matrix_t(size_t height, size_t width, Type const& scalar)
- 
+
+// Make a copy 
  matrix_t(matrix_t const& other)
  
+// Attach to a local memory buffer instead. Not freed!
  matrix_t(Type* buffer, size_t height, size_t width)
 
+// Ie: rows * columns
  size_t size() const
 
+/*
+  NOTE: No bounds checking with get() functions
+*/ 
+
  Type const& get(size_t row, size_t column) const
- 
+
  Type& get(size_t row, size_t column)   
-  
+
+// Returns get(row, column)
  Type const& operator()(size_t row, size_t column) const
- 
+
  Type& operator()(size_t row, size_t column)
 
+// Returns get(0, column)
  Type const& get(size_t column) const
 
+// Returns get(column)
  Type& get(size_t column)
 
  Type const& operator()(size_t column) const
 
  Type& operator()(size_t column)
 
+/*
+  NOTE: set() functions ARE bounds checked
+*/ 
+
  matrix_t& set(size_t row, size_t column, Type const& value)
  
  matrix_t& operator()(size_t row, size_t column, Type const& value)
 
+// Ie: rows == columns == 0
  bool empty() const
- 
+
+// Check if `row` and `column` inside matrix boundaries 
  bool bounds(size_t row, size_t column) const+
 
+// Destructive; old data not saved! 
  matrix_t& reshape(size_t height, size_t width)
 
  matrix_t& use(Type* buffer, size_t height, size_t width)
@@ -127,6 +147,10 @@
  matrix_t& read(std::istream& in)
 
  ~matrix_t()
+
+/*
+  Non-member functions
+*/
 
  void swap(matrix_t& lhs, matrix_t& rhs)
 
