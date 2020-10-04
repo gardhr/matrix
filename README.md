@@ -52,16 +52,6 @@ xyz::matrix m(3, 5);
 
  Type& operator()(size_t row, size_t column)
 
-// Returns get(0, column)
- Type const& get(size_t column) const
-
-// Returns get(column)
- Type& get(size_t column)
-
- Type const& operator()(size_t column) const
-
- Type& operator()(size_t column)
-
 /*
   NOTE: set() functions ARE bounds checked
 */ 
