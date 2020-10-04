@@ -62,7 +62,7 @@
 // Check if `row` and `column` inside matrix boundaries 
  bool bounds(size_t row, size_t column) const+
 
-// Destructive; old data not saved! 
+// Destructive; Old data not saved! 
  matrix_t& reshape(size_t height, size_t width)
 
 // Attach to a local memory buffer instead. Not freed!
@@ -152,9 +152,10 @@
 // Solve systems of equations
  matrix_t solve(matrix_t const& other) const
 
-// 
+// Trade places
  matrix_t& swap(matrix_t& other)
 
+// Swap rows with columns
  matrix_t& swap()
 
  std::string text(bool punctuate = false) const
@@ -162,8 +163,6 @@
  matrix_t& read(std::string const& input)
  
  matrix_t& read(std::istream& in)
-
- ~matrix_t()
 
 /*
   Non-member functions
