@@ -2,7 +2,7 @@
 
 Single-header matrix library for C++. 
 
-Simply include "matrix.hpp" (or "matrix" if importing default namespace). 
+Simply include "matrix.hpp" (or "matrix", if importing default namespace). 
 
 If matrix_t or matrix are already defined, library can be wrapped in a namespace:
 
