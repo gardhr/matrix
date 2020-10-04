@@ -21,7 +21,7 @@ struct matrix_t
  typedef std::size_t size_t;
  typedef std::string string;
  typedef std::istream istream;
- typedef std::stringstream sstream;
+ typedef std::stringstream stringstream;
   
  struct exception : std::exception
  {
@@ -518,7 +518,7 @@ struct matrix_t
    {
     if(cdx != 0)
      result += comma;
-    sstream ss;
+    stringstream ss;
     ss << get(rdx, cdx); 
     result += ss.str();
     if(cdx != non)
@@ -559,14 +559,14 @@ struct matrix_t
   replace_(lines, open, space);
   replace_(lines, close, crlf);
   replace_(lines, comma, space);
-  sstream ss(lines);
+  stringstream ss(lines);
   string line;
   std::vector<Type> values;
   size_t rows = 0;
   size_t columns = 0;
   while(getline(ss, line))
   {
-   sstream ls(line);
+   stringstream ls(line);
    size_t rectangular = 0;
    Type value;
    while(ls >> value)
