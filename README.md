@@ -12,7 +12,7 @@
   
  matrix_t(size_t height, size_t width, Type const& scalar)
  
- matrix_t(matrix_tconst& other)
+ matrix_t(matrix_t const& other)
  
  matrix_t(Type* buffer, size_t height, size_t width)
 
@@ -48,9 +48,9 @@
    
  matrix_t& use(Type* buffer)
 
- bool operator == (matrix_tconst& other) const
+ bool operator == (matrix_t const& other) const
 
- bool operator != (matrix_tconst& other) const
+ bool operator != (matrix_t const& other) const
 
  template  <typename Function> 
  matrix_t& each(Function process)
@@ -78,19 +78,19 @@
 
  matrix_toperator / (Type const& value) const
 
- matrix_t& operator = (matrix_tconst& other)
+ matrix_t& operator = (matrix_t const& other)
   
- matrix_t& operator += (matrix_tconst& other)
+ matrix_t& operator += (matrix_t const& other)
 
- matrix_toperator + (matrix_tconst& other) const
+ matrix_toperator + (matrix_t const& other) const
  
- matrix_t& operator -= (matrix_tconst& other)
+ matrix_t& operator -= (matrix_t const& other)
 
- matrix_toperator - (matrix_tconst& other) const
+ matrix_toperator - (matrix_t const& other) const
 
- matrix_t& operator *= (matrix_tconst& other)
+ matrix_t& operator *= (matrix_t const& other)
  
- matrix_toperator * (matrix_tconst& other) const
+ matrix_toperator * (matrix_t const& other) const
 
  matrix_t& transpose()
 
@@ -114,7 +114,7 @@
 
  matrix_t& invert()
 
- matrix_tsolve(matrix_tconst& other) const
+ matrix_tsolve(matrix_t const& other) const
 
  matrix_t& swap(matrix_t& other)
 
@@ -132,7 +132,7 @@
  void swap(matrix_t& lhs, matrix_t& rhs)
 
  template  <typename Type> 
- std::ostream& operator  < < (std::ostream& out, matrix_tconst& mat)
+ std::ostream& operator  < < (std::ostream& out, matrix_t const& mat)
 
  template  <typename Type> 
  std::istream& operator > >  (std::istream& in, matrix_t& mat)
