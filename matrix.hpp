@@ -482,12 +482,18 @@ struct matrix_t
  
  inline matrix_t& swap(matrix_t& other)
  {
-  swap_(rows, other.rows);
+  swap_(rows, columns);
   swap_(columns, other.columns);
   swap_(data, other.data);
   swap_(managed, other.managed);
   return *this;
- }   
+ } 
+
+ inline matrix_t& swap()
+ {
+  swap_(rows, columns);
+  return *this;
+ }    
 
  string text(bool punctuate = false) const
  {
