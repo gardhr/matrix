@@ -12,7 +12,7 @@
 // Ie: rows == height, columns == width
  matrix_t(size_t height, size_t width)
 
-// Diagonals set to scalar and rest to "zero" 
+// Diagonals set to scalar, otherwise "zero" 
  matrix_t(size_t height, size_t width, Type const& scalar)
 
 // Make a copy 
@@ -52,7 +52,8 @@
 */ 
 
  matrix_t& set(size_t row, size_t column, Type const& value)
- 
+
+// Returns set(row, column) 
  matrix_t& operator()(size_t row, size_t column, Type const& value)
 
 // Ie: rows == columns == 0
@@ -64,22 +65,28 @@
 // Destructive; old data not saved! 
  matrix_t& reshape(size_t height, size_t width)
 
+// Attach to a local memory buffer instead. Not freed!
  matrix_t& use(Type* buffer, size_t height, size_t width)
-   
+ 
+// Same as above, but using current `rows` and `columns`   
  matrix_t& use(Type* buffer)
 
  bool operator == (matrix_t const& other) const
 
  bool operator != (matrix_t const& other) const
 
+// Apply `process` to each element; ie: process(data[row][column])
  template  <typename Function> 
  matrix_t& each(Function process)
 
+// Apply `process` to each element with indexes; ie: process(data[row][column], row, column)
  template  <typename Function> 
  matrix_t& index(Function process)
 
+// Set all elements to `value`
  matrix_t& fill(Type const& value)
 
+// Diagonals set to scalar, otherwise "zero"
  matrix_t& operator = (Type const& scalar)
 
  matrix_t& operator += (Type const& value)
@@ -112,8 +119,10 @@
  
  matrix_t operator * (matrix_t const& other) const
 
+// Flip
  matrix_t& transpose()
 
+// Make a flipped copy
  matrix_t transposed() const
 
  Type trace() const
@@ -122,20 +131,28 @@
 
  Type determinant(size_t excludeRow, size_t excludeColumn) const
 
+// Put in row echelon form
  matrix_t& echelonate() 
  
+// Above, with copy
  matrix_t echelon() const
 
+// Put in reduced row echelon form
  matrix_t& reduce()
 
+// Above, with copy
  matrix_t reduced() const
 
- matrix_t inverse() const
-
+// Invert the matrix, if possible (Must be square and have a non-zero determinant)
  matrix_t& invert()
 
+// Above, with copy
+ matrix_t inverse() const
+
+// Solve systems of equations
  matrix_t solve(matrix_t const& other) const
 
+// 
  matrix_t& swap(matrix_t& other)
 
  matrix_t& swap()
