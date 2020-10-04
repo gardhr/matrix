@@ -12,16 +12,16 @@ matrix solve_conglomerate(matrix const& block)
   return block.inverse();
  if(rows > columns)
   return solve_conglomerate(block.transposed()).transpose();
- matrix known = matrix(rows, rows);
+ matrix system = matrix(rows, rows);
  for(size_t idx = 0; idx < rows; ++idx)
   for(size_t jdx = 0; jdx < rows; ++jdx)
-   known(idx, jdx) = block(idx, jdx);
+   system(idx, jdx) = block(idx, jdx);
  size_t width = columns - rows;
- matrix unknown = matrix(rows, width);
+ matrix evaluation = matrix(rows, width);
  for(size_t idx = 0; idx < rows; ++idx)
   for(size_t jdx = 0; jdx < width; ++jdx)
-   unknown(idx, jdx) = block(idx, rows + jdx);
- return known.solve(unknown);
+   evaluation(idx, jdx) = block(idx, rows + jdx);
+ return system.solve(evaluation);
 }
 
 int main(int argc, char** argv)
