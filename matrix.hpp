@@ -482,7 +482,7 @@ struct matrix_t
  
  inline matrix_t& swap(matrix_t& other)
  {
-  swap_(rows, columns);
+  swap_(rows, other.rows);
   swap_(columns, other.columns);
   swap_(data, other.data);
   swap_(managed, other.managed);
