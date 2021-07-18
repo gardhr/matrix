@@ -1,8 +1,8 @@
 # matrix
 
-Single-header matrix library for C++. 
+Single-header matrix library for C++.
 
-Simply include "matrix.hpp" (or "matrix", if importing default namespace). 
+Simply include "matrix.hpp" (or "matrix", if importing default namespace).
 
 If matrix_t or matrix are already defined, library can be wrapped in a namespace:
 
@@ -18,7 +18,7 @@ xyz::matrix m(3, 5);
 ```cpp
 
  template <typename Type> class matrix_t;
- 
+
  typedef matrix_t<double> matrix;
 
 // Create an empty matrix
@@ -27,12 +27,12 @@ xyz::matrix m(3, 5);
 // Ie: rows == height, columns == width
  matrix_t(size_t height, size_t width)
 
-// Diagonals set to scalar, otherwise "zero" 
+// Diagonals set to scalar, otherwise "zero"
  matrix_t(size_t height, size_t width, Type const& scalar)
 
-// Make a copy 
+// Make a copy
  matrix_t(matrix_t const& other)
- 
+
 // Attach to a local memory buffer instead. Not freed!
  matrix_t(Type* buffer, size_t height, size_t width)
 
@@ -41,11 +41,11 @@ xyz::matrix m(3, 5);
 
 /*
   NOTE: No bounds checking with get() functions
-*/ 
+*/
 
  Type const& get(size_t row, size_t column) const
 
- Type& get(size_t row, size_t column)   
+ Type& get(size_t row, size_t column)
 
 // Returns get(row, column)
  Type const& operator()(size_t row, size_t column) const
@@ -54,26 +54,26 @@ xyz::matrix m(3, 5);
 
 /*
   NOTE: set() functions ARE bounds checked
-*/ 
+*/
 
  matrix_t& set(size_t row, size_t column, Type const& value)
 
-// Returns set(row, column) 
+// Returns set(row, column, value)
  matrix_t& operator()(size_t row, size_t column, Type const& value)
 
 // Ie: rows == columns == 0
  bool empty() const
 
-// Check if `row` and `column` inside matrix boundaries 
- bool bounds(size_t row, size_t column) const+
+// Check if `row` and `column` inside matrix boundaries
+ bool bounds(size_t row, size_t column) const
 
-// Destructive; Old data not saved! 
+// Destructive; Old data not saved!
  matrix_t& reshape(size_t height, size_t width)
 
 // Attach to a local memory buffer instead. Not freed!
  matrix_t& use(Type* buffer, size_t height, size_t width)
- 
-// Same as above, but using current `rows` and `columns`   
+
+// Same as above, but using current `rows` and `columns`
  matrix_t& use(Type* buffer)
 
  bool operator == (matrix_t const& other) const
@@ -81,11 +81,11 @@ xyz::matrix m(3, 5);
  bool operator != (matrix_t const& other) const
 
 // Apply `process` to each element; ie: process(data[row][column])
- template  <typename Function> 
+ template  <typename Function>
  matrix_t& each(Function process)
 
 // Apply `process` to each element with indexes; ie: process(data[row][column], row, column)
- template  <typename Function> 
+ template  <typename Function>
  matrix_t& index(Function process)
 
 // Set all elements to `value`
@@ -97,7 +97,7 @@ xyz::matrix m(3, 5);
  matrix_t& operator += (Type const& value)
 
  matrix_t operator + (Type const& value) const
- 
+
  matrix_t& operator -= (Type const& value)
 
  matrix_t operator - (Type const& value) const
@@ -111,17 +111,17 @@ xyz::matrix m(3, 5);
  matrix_t operator / (Type const& value) const
 
  matrix_t& operator = (matrix_t const& other)
-  
+
  matrix_t& operator += (matrix_t const& other)
 
  matrix_t operator + (matrix_t const& other) const
- 
+
  matrix_t& operator -= (matrix_t const& other)
 
  matrix_t operator - (matrix_t const& other) const
 
  matrix_t& operator *= (matrix_t const& other)
- 
+
  matrix_t operator * (matrix_t const& other) const
 
 // Flip
@@ -137,8 +137,8 @@ xyz::matrix m(3, 5);
  Type determinant(size_t excludeRow, size_t excludeColumn) const
 
 // Put in row echelon form
- matrix_t& echelonate() 
- 
+ matrix_t& echelonate()
+
 // Above, with copy
  matrix_t echelon() const
 
@@ -164,11 +164,11 @@ xyz::matrix m(3, 5);
  matrix_t& swap()
 
  std::string text(bool punctuate = false) const
- 
-// Parse input and set matrix accordingly  
+
+// Parse input and set matrix accordingly
  matrix_t& read(std::string const& input)
 
-// Parse from stream instead 
+// Parse from stream instead
  matrix_t& read(std::istream& in)
 
 /*
@@ -184,6 +184,4 @@ xyz::matrix m(3, 5);
 // Ie: mat.read(in);
  std::istream& operator >> (std::istream& in, matrix_t& mat)
 
-``` 
- 
-
+```
