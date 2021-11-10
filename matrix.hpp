@@ -268,7 +268,6 @@ struct matrix_t {
     size_t height = rows;
     size_t width = other.columns;
     matrix_t result = matrix_t(height, width);
-    show((void*)result.data);
     for (size_t wdx = 0; wdx < width; ++wdx) {
       for (size_t hdx = 0; hdx < height; ++hdx) {
         Type& cell = result(hdx, wdx);
