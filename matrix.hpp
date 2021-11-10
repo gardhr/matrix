@@ -109,9 +109,7 @@ struct matrix_t {
       size_t dimensions = size();
       MATRIX_REJECT(dimensions == 0,
                     matrix_t::reshape(size_t height, size_t width));
-      data = new Type[dimensions];
-      for (size_t ddx = 0; ddx < dimensions; ++ddx)
-        data[ddx] = Type();
+      data = new Type[dimensions]();
       managed = true;
     }
     return *this;
