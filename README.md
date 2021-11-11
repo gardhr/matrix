@@ -25,7 +25,7 @@ xyz::matrix m(3, 5);
  matrix_t()
 
 // Ie: rows == height, columns == width
- matrix_t(size_t height, size_t width)
+ matrix_t(size_t height, size_t width = 1)
 
 // Diagonals set to scalar, otherwise "zero"
  matrix_t(size_t height, size_t width, Type const& scalar)
@@ -34,7 +34,7 @@ xyz::matrix m(3, 5);
  matrix_t(matrix_t const& other)
 
 // Attach to a local memory buffer instead. Not freed!
- matrix_t(Type* buffer, size_t height, size_t width)
+ matrix_t(Type* buffer, size_t height, size_t width = 1)
 
 // Ie: rows * columns
  size_t size() const
@@ -45,12 +45,12 @@ xyz::matrix m(3, 5);
 
  Type const& get(size_t row, size_t column) const
 
- Type& get(size_t row, size_t column)
+ Type& get(size_t row, size_t column = 0)
 
 // Returns get(row, column)
- Type const& operator()(size_t row, size_t column) const
+ Type const& operator()(size_t row, size_t column = 0) const
 
- Type& operator()(size_t row, size_t column)
+ Type& operator()(size_t row, size_t column = 0)
 
 /*
   NOTE: set() functions ARE bounds checked
@@ -71,7 +71,7 @@ xyz::matrix m(3, 5);
  matrix_t& reshape(size_t height, size_t width)
 
 // Attach to a local memory buffer instead. Not freed!
- matrix_t& use(Type* buffer, size_t height, size_t width)
+ matrix_t& use(Type* buffer, size_t height, size_t width = 1)
 
 // Same as above, but using current `rows` and `columns`
  matrix_t& use(Type* buffer)
