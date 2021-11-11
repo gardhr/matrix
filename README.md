@@ -43,7 +43,7 @@ xyz::matrix m(3, 5);
   NOTE: No bounds checking with get() functions
 */
 
- Type const& get(size_t row, size_t column) const
+ Type const& get(size_t row, size_t column = 0) const
 
  Type& get(size_t row, size_t column = 0)
 
