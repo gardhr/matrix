@@ -68,7 +68,7 @@ xyz::matrix m(3, 5);
  bool bounds(size_t row, size_t column) const
 
 // Destructive; Old data not saved!
- matrix_t& reshape(size_t height, size_t width)
+ matrix_t& reshape(size_t height, size_t width = 1)
 
 // Attach to a local memory buffer instead. Not freed!
  matrix_t& use(Type* buffer, size_t height, size_t width = 1)
