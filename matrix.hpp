@@ -276,6 +276,14 @@ struct matrix_t {
     return result;
   }
 
+  inline matrix_t& operator/=(matrix_t const& other) {
+    return *this = *this / other;
+  }
+
+  inline matrix_t operator/(matrix_t const& other) const {
+    return *this * other.inverse();
+  }
+
   inline matrix_t& transpose() {
     matrix_t copy = transposed();
     return swap(copy);
@@ -537,4 +545,3 @@ typedef matrix_t<double> matrix;
 }  // namespace GARDHR_MATRIX_NAMESPACE
 
 #endif  // GARDHR_MATRIX_INCLUDED
-
