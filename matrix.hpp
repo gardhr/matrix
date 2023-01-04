@@ -545,3 +545,4 @@ typedef matrix_t<double> matrix;
 }  // namespace GARDHR_MATRIX_NAMESPACE
 
 #endif  // GARDHR_MATRIX_INCLUDED
+
