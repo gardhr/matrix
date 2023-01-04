@@ -123,7 +123,7 @@ xyz::matrix m(3, 5);
  matrix_t& operator *= (matrix_t const& other)
 
  matrix_t operator * (matrix_t const& other) const
-  
+
  matrix_t& operator /= (matrix_t const& other)
 
  matrix_t operator / (matrix_t const& other) const
