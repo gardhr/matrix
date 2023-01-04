@@ -397,50 +397,6 @@ struct matrix_t {
     return inverse() * other;
   }
 
-/*
-  // TODO: test/incorporate new functions
-
-  inline matrix_t exp(size_t iterations = 0) const {
-    if (iterations == 0)
-      iterations = rows * columns;
-    matrix_t power = *this;
-    power = 1;
-    matrix_t result = *this;
-    result = 0;
-    double factorial = 1;
-    double next = 1;
-    while (iterations--) {
-      power *= *this;
-      double factor = 1 / factorial;
-      result += power * factor;
-      factorial *= next++;
-    }
-    return result;
-  }
-
-  Type evaluate(Type value) {
-    Type pwr = 1;
-    Type ges = 0;
-    for (size_t pdx = rows - 1; pdx >= 0; --pdx, pwr *= value)
-      ges += (*this)(pdx)*pwr;
-    return ges;
-  }
-
-  matrix_t& model(const matrix_t& lhs, const matrix_t& rhs, size_t levels = 0) {
-    size_t size = lhs.size();
-    matrix_t bas = matrix_t(size, levels + 1);
-    for (int sdx = 0; sdx < size; ++sdx) {
-      Type dat = lhs(sdx);
-      int pdx = levels;
-      for (Type pwr = 0; pwr <= levels; ++pwr)
-        bas(sdx, pdx--) = pow(dat, pwr);
-    }
-    matrix_t flp = bas.transposed();
-    *this = ((flp * bas).inverse() * flp) * rhs;
-    return *this;
-  }
-*/
-
   template <typename Data>
   static inline void swap_(Data& lhs, Data& rhs) {
     Data tmp = lhs;
